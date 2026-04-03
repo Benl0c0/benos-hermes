@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BEN//OS | KIRA Mission Control</title>
+    <style>
+        :root {
+            --bg-color: #0b0c10;
+            --card-bg: #1f2833;
+            --text-main: #c5c6c7;
+            --accent-cyan: #66fcf1;
+            --accent-dark: #45a29e;
+            --status-green: #00ff66;
+            --status-yellow: #ffcc00;
+            --status-red: #ff3333;
+            --font-mono: 'Fira Code', monospace;
+            --font-sans: system-ui, -apple-system, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            padding: 10px;
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--accent-dark);
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+        .brand {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: var(--font-mono);
+        }
+        .status-dot {
+            height: 12px; width: 12px;
+            background: var(--status-green);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            box-shadow: 0 0 10px var(--status-green);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* --- SYSTEM METRICS --- */
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .metric-card {
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin: 5px 0;
+        }
+        .metric-label { font-size: 0.75rem; text-transform: uppercase; color: var(--accent-dark); }
+
+        /* --- AGENT GRID --- */
+        .agents-title { font-family: var(--font-mono); color: var(--accent-cyan); margin-bottom: 10px; font-size: 0.9rem; }
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .agent-card {
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-dark);
+        }
+        .agent-card.active { border-left-color: var(--status-green); }
+        .agent-card.busy { border-left-color: var(--status-yellow); }
+        .agent-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; }
+        .agent-task { font-size: 0.85rem; color: #888; font-family: var(--font-mono); min-height: 2.4em; }
+        
+        /* --- LOG CONSOLE --- */
+        .console-box {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 10px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: #0f0;
+            height: 250px;
+            overflow-y: auto;
+            position: relative;
+        }
+        .log-line { margin-bottom: 4px; border-bottom: 1px dashed #222; padding-bottom: 2px; }
+        .log-time { color: #666; margin-right: 8px; }
+
+        /* --- COSTS --- */
+        .cost-meter {
+            background: #333;
+            height: 6px;
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        .cost-fill {
+            background: var(--status-green);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .metrics-row { grid-template-columns: 1fr 1fr; }
+            .agent-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <span class="status-dot" id="sys-dot"></span>
+        <span class="brand">BEN//OS</span>
+    </div>
+    <div style="text-align: right; font-family: var(--font-mono); font-size: 0.8rem;">
+        <div id="clock">00:00:00</div>
+        <div style="color: var(--accent-cyan);">Uptime: <span id="uptime">0h 0m</span></div>
+    </div>
+</header>
+
+<h2 class="agents-title">SYSTEM METRICS</h2>
+<div class="metrics-row">
+    <div class="metric-card">
+        <div class="metric-label">CPU Load</div>
+        <div class="metric-value" id="cpu-val">12%</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-label">RAM (8GB)</div>
+        <div class="metric-value" id="ram-val">3.4 GB</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-label">Xiaomi Budget</div>
+        <div class="metric-value" id="budget-val">$4.82</div>
+        <div class="cost-meter"><div class="cost-fill" id="budget-bar" style="width: 90%"></div></div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-label">Model Status</div>
+        <div class="metric-value" style="color: var(--status-green); font-size: 1.1rem; margin-top:10px;" id="model-val">S1 Free</div>
+    </div>
+</div>
+
+<h2 class="agents-title">AGENTS</h2>
+<div class="agent-grid" id="agent-grid">
+    <!-- Agents rendered by JS -->
+</div>
+
+<h2 class="agents-title">SYSTEM LOG</h2>
+<div class="console-box" id="console">
+    <div class="log-line"><span class="log-time">--:--:--</span> System initializing...</div>
+</div>
+
+<script>
+    // --- MOCK DATA SIMULATION ---
+    const agents = [
+        { id: 'intel', name: 'Intel Director', status: 'Idle', task: 'Waiting for input...', load: 0 },
+        { id: 'content', name: 'Content', status: 'Idle', task: 'Ready', load: 0 },
+        { id: 'trading', name: 'Trading Bot', status: 'Active', task: 'Scanning ETH/BTC pairs...', load: 45 },
+        { id: 'cto', name: 'CTO / Infra', status: 'Busy', task: 'Optimizing SQLite DB...', load: 12 }
+    ];
+
+    const logs = [
+        "HERMES > Boot sequence started.",
+        "CONFIG > Loading ~/.hermes/config.yaml ... OK",
+        "API > Xiaomi Connection established.",
+        "CORE > Model routing set to S1 (Free).",
+        "AGENT-INTEL > Waking up.",
+        "WEB > Scraping news sources...",
+        "DB > Cleaning old logs from 2026-03-31.",
+        "COST > Daily check passed. Budget OK.",
+        "GITHUB > Syncing repo Benl0c0/benos-hermes... Pushed.",
+        "SYSTEM > Dashboard v1.0 mounted."
+    ];
+
+    let startTime = new Date();
+    let logIndex = 0;
+
+    // Helper: Random int
+    const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+
+    // Update Clock
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').innerText = now.toLocaleTimeString('de-DE');
+        
+        const diff = now - startTime;
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        document.getElementById('uptime').innerText = `${h}h ${m}m`;
+    }
+    setInterval(updateClock, 1000);
+
+    // Update Metrics (Random Jitter)
+    function updateMetrics() {
+        const cpu = rnd(5, 40);
+        const ram = (3.0 + Math.random() * 0.4).toFixed(1);
+        document.getElementById('cpu-val').innerText = cpu + '%';
+        document.getElementById('cpu-val').style.color = cpu > 30 ? 'var(--status-yellow)' : '#fff';
+        document.getElementById('ram-val').innerText = ram + ' GB';
+        
+        // Budget fluctuation simulation
+        let cost = 4.80 + (Math.random() * 0.05);
+        document.getElementById('budget-val').innerText = '$' + cost.toFixed(2);
+    }
+    setInterval(updateMetrics, 2000);
+
+    // Render Agents
+    function renderAgents() {
+        const grid = document.getElementById('agent-grid');
+        grid.innerHTML = '';
+        agents.forEach(a => {
+            let statusClass = a.status === 'Active' || a.status === 'Busy' ? 'active' : '';
+            if(a.status === 'Idle') statusClass = '';
+            
+            grid.innerHTML += `
+                <div class="agent-card ${statusClass}">
+                    <div class="agent-header">
+                        <span>${a.name}</span>
+                        <span style="font-size: 0.7rem; color: ${a.status === 'Idle' ? '#666' : 'var(--status-green)'}">${a.status}</span>
+                    </div>
+                    <div class="agent-task" id="task-${a.id}">${a.task}</div>
+                    <div style="margin-top: 5px; font-size: 0.6rem; color: #444;">Load: ${a.load}%</div>
+                </div>
+            `;
+        });
+    }
+    renderAgents();
+
+    // Simulate Agent Activity
+    setInterval(() => {
+        const tasks = [
+            "Fetching RSS Feeds...", "Analyzing crypto trends...", "Updating dashboard...",
+            "Pinging heartbeat...", "Compiling daily report...", "Indexing memory...",
+            "Checking GitHub issues...", "Re-calibrating trading bots..."
+        ];
+        const activeAgent = agents[rnd(0, agents.length-1)];
+        activeAgent.status = "Active";
+        activeAgent.task = tasks[rnd(0, tasks.length-1)];
+        activeAgent.load = rnd(20, 80);
+        renderAgents();
+        
+        addLog(`AGENT-${activeAgent.id.toUpperCase()} > ${activeAgent.task}`);
+
+        // Reset after some time
+        setTimeout(() => {
+            activeAgent.status = "Idle";
+            activeAgent.task = "Waiting...";
+            activeAgent.load = 0;
+            renderAgents();
+        }, 4000);
+    }, 5000);
+
+    // Log Stream
+    function addLog(msg) {
+        const box = document.getElementById('console');
+        const t = new Date().toLocaleTimeString('de-DE');
+        box.innerHTML += `<div class="log-line"><span class="log-time">${t}</span>${msg}</div>`;
+        box.scrollTop = box.scrollHeight;
+    }
+
+    // Initial Logs
+    function playLogs() {
+        if (logIndex < logs.length) {
+            addLog(logs[logIndex]);
+            logIndex++;
+            setTimeout(playLogs, rnd(300, 800));
+        }
+    }
+    setTimeout(playLogs, 500);
+
+</script>
+</body>
+</html>
