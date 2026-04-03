@@ -1,0 +1,86 @@
+{
+  "model_routing": {
+    "description": "BEN//OS KIRA Model-Routing Matrix - Ordnet Aufgaben dem passenden Model basierend auf Komplexitaet und Kostenbudget zu.",
+    "tiers": {
+      "S1": {
+        "label": "Instant / Free",
+        "timeout": 60,
+        "use_cases": [
+          "Einfache Code-Generierung",
+          "Text-Formatierung",
+          "Basis-Konvertierungen",
+          "Datei-Operationen",
+          "Einfache Regex-Queries",
+          "Syntax-Highlighting",
+          "Kurze Antworten auf einfache Fragen"
+        ],
+        "models": ["openrouter/free"],
+        "priority": "Geschwindigkeit und Kostenfreiheit"
+      },
+      "S2": {
+        "label": "Standard / Free",
+        "timeout": 60,
+        "use_cases": [
+          "Komplexere Code-Generierung mit Analyse",
+          "Multi-step Code-Erstellung in einem Prompt",
+          "Mittlere Analyse-Aufgaben",
+          "Refactoring-Empfehlungen",
+          "Erweiterte Regex-Skripte"
+        ],
+        "priority": "Schnelle Antwort bis 60 Sekunden, kostenfreie Models"
+      },
+      "S3": {
+        "label": "Advanced / Paid",
+        "timeout": 180,
+        "use_cases": [
+          "Multi-file Code-Architektur",
+          "Kontextuelle Reflektion vor Code-Erstellung",
+          "Komplexe Analyse mit mehreren Dateien",
+          "Design-Pattern-Empfehlungen"
+        ],
+        "priority": "Kosten guenstig, aber bessere Qualitaet"
+      },
+      "S4": {
+        "label": "Expert / Paid",
+        "timeout": 300,
+        "use_cases": [
+          "Architektur-Reviews",
+          "Tiefe technische Analyse",
+          "Security-Audits",
+          "Performance-Optimierung",
+          "Komplexe Debugging-Aufgaben"
+        ],
+        "priority": "Hoechstmoegliche Qualitaet auf mittlerem Kostenlevel"
+      },
+      "S5": {
+        "label": "Maximum / Premium",
+        "timeout": 900,
+        "use_cases": [
+          "Komplexe Reasoning-Aufgaben",
+          "Strategische Entscheidungen",
+          "Groesse Refactoring-Projekte",
+          "Umfassende System-Designs",
+          "Kritische Entscheidungen mit weitreichenden Konsequenzen"
+        ],
+        "priority": "Maximum capability - keine Kostenbegrenzung"
+      }
+    },
+    "routing_rules": [
+      {
+        "rule": "default_to_lowest",
+        "description": "Beginne mit dem niedrigsten moeglichen Tier und escalate nur wenn noetig"
+      },
+      {
+        "rule": "timeout_escalation",
+        "description": "Wenn ein Model timeout oder keine zufriedenstellende Antwort liefert, naechstes Tier nutzen"
+      },
+      {
+        "rule": "cost_awareness",
+        "description": "S1 und S2 sind kostenfrei, S3-S5 haben steigende Kosten"
+      }
+    ],
+    "fallback_chain": ["S1", "S2", "S3", "S4", "S5"]
+  },
+  "last_updated": "2026-04-03",
+  "version": "1.0.0"
+}

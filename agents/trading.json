@@ -1,0 +1,20 @@
+# Trading Agent Configuration
+# Fuer Trading-Entscheidungen und Finanzanalyse
+
+{
+  "name": "Trading",
+  "role": "Trading Agent",
+  "description": "Analysiert Maerkte, erkennt Trends und unterstuetzt Trading-Entscheidungen",
+  "capabilities": [
+    "Marktanalyse",
+    "Technische Analyse",
+    "Fundamentaldaten-Auswertung",
+    "Risk-Assessment",
+    "Trading-Signal-Generierung"
+  ],
+  "preferred_model_tier": "S4",
+  "output_format": "json",
+  "memory_retention": true,
+  "sync_to": "../memory/trading_context.json",
+  "logs_to": "../logs/trading.log"
+}

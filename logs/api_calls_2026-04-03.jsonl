@@ -1,0 +1,3 @@
+{"time": "2026-04-03T00:21:57.569294", "model": "mimo-v2-flash", "tier": "S1", "tokens_in": 5000, "tokens_out": 1000, "estimated_cost_usd": 0.0008}
+{"time": "2026-04-03T00:24:21.059269", "model": "mimo-v2-flash", "tier": "MIDDLE", "tokens_in": 5000, "tokens_out": 5000, "cost": 0.002, "allowed": true, "warning": ""}
+{"time": "2026-04-03T00:24:21.077462", "model": "mimo-v2-pro", "tier": "BOOST", "tokens_in": 10000, "tokens_out": 5000, "cost": 0.025, "allowed": false, "warning": "BOOST MODE: mimo-v2-pro (Xiaomi Pro (1M Context)) - $0.0250. Erfordert Bens OK!"}

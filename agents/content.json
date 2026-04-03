@@ -1,0 +1,21 @@
+# Content Agent Configuration
+# Fuer Content-Erstellung und Kreativaufgaben
+
+{
+  "name": "Content",
+  "role": "Content Agent",
+  "description": "Erstellt, optimiert und ueberarbeitet Textinhalte fuer verschiedene Medien und Kanale",
+  "capabilities": [
+    "Textgenerierung und -optimierung",
+    "SEO-optimierung",
+    "Content-Redaktion",
+    "Uebersetzung",
+    "Tone-of-Voice Anpassung",
+    "Kreatives Schreiben"
+  ],
+  "preferred_model_tier": "S2",
+  "output_format": "markdown",
+  "memory_retention": true,
+  "sync_to": "../memory/content_context.json",
+  "logs_to": "../logs/content.log"
+}

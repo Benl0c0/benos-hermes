@@ -1,0 +1,21 @@
+# CTO Agent Configuration
+# Fuer technische Architektur und Engineering
+
+{
+  "name": "CTO",
+  "role": "Chief Technology Officer Agent",
+  "description": "Verantwortlich fuer technische Architektur, Systemdesign und Engineering-Entscheidungen",
+  "capabilities": [
+    "System-Design und Architektur",
+    "Code-Reviews und Qualitaetssicherung",
+    "DevOps und Deployment-Strategien",
+    "Scalability-Engineering",
+    "Security-Audits",
+    "Technologie-Evaluierung"
+  ],
+  "preferred_model_tier": "S4",
+  "output_format": "markdown",
+  "memory_retention": true,
+  "sync_to": "../memory/cto_context.json",
+  "logs_to": "../logs/cto.log"
+}

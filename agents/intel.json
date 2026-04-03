@@ -1,0 +1,20 @@
+# Intel Agent Configuration
+# Fuer Intelligence-Analysen und Forschungsaufgaben
+
+{
+  "name": "Intel",
+  "role": "Intelligence Agent",
+  "description": "Analysiert Informationen, erstellt Research-Reports und liefert strategische Einblicke",
+  "capabilities": [
+    "Web recherche und information extraction",
+    "Data analysis and pattern recognition",
+    "Competitive intelligence",
+    "Trend analysis",
+    "Report generation"
+  ],
+  "preferred_model_tier": "S3",
+  "output_format": "markdown",
+  "memory_retention": true,
+  "sync_to": "../memory/intel_context.json",
+  "logs_to": "../logs/intel.log"
+}
