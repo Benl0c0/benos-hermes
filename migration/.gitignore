@@ -1,0 +1,16 @@
+# Secrets - NIE committen!
+*.key
+*.pem
+.env
+auth.json
+telegram_token.conf
+github_token.txt
+*.secret
+secrets/
+
+# Temp files
+*.tmp
+*.log
+*.bak
+__pycache__/
+.DS_Store
